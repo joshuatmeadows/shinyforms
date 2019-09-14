@@ -215,11 +215,41 @@ formUI <- function(formInfo) {
               input <- numericInput(ns(question$id), NULL, 0)
             } else if (question$type == "checkbox") {
               input <- checkboxInput(ns(question$id), label, FALSE)
+            } else if (question$type == "checkboxGroup") {
+              choices<-question$choices
+              input <- checkboxGroupInput(ns(question$id), label,choices)
+            } else if (question$type == "radioButtons") {
+              choices<-question$choices
+              if (is.null(question$offset)){
+                offset<-0
+              }
+              else{
+                offset<-question$offset
+              }
+              if (is.null(question$inline)){
+                inline<-FALSE
+              }
+              else{
+                inline<-question$offset
+              }
+              input <- fluidRow(column(12,radioButtons(ns(question$id), label,choices,selected = character(0),inline=inline,width="100%"),offset=offset))
+            } else if (question$type == "select") {
+              choices<-question$choices
+              if (is.null(question$offset)){
+                offset<-0
+              }
+              else{
+                offset<-question$offset
+              }
+              input <- fluidRow(column(12,selectInput(ns(question$id), NULL,choices),offset=offset))
+            } else if (question$type == "helpText") {
+              choices<-question$choices
+              input <- helpText(choices)
             }
 
             div(
               class = "sf-question",
-              if (question$type != "checkbox") {
+              if (question$type != "checkbox" && question$type != "checkboxGroup" && question$type != "radioButtons") {
                 tags$label(
                   `for` = ns(question$id),
                   class = "sf-input-label",
